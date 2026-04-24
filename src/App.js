@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
@@ -33,7 +33,7 @@ const BookList = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const fetchBooks = () => {
+  const fetchBooks = useCallback(() => {
     setLoading(true);
     setError('');
     axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}`)
@@ -45,9 +45,11 @@ const BookList = () => {
         setError('Error fetching data.');
         setLoading(false);
       });
-  };
+  }, [query]);
 
-  useEffect(() => { fetchBooks(); }, []);
+  useEffect(() => { 
+    fetchBooks(); 
+  }, [fetchBooks]); 
 
   return (
     <div className="container">
@@ -112,9 +114,10 @@ const BookDetail = () => {
 
 const Favorites = () => {
   const [list, setList] = useState([]);
-  const favIds = JSON.parse(localStorage.getItem('myFavs') || '[]');
 
   useEffect(() => {
+    const favIds = JSON.parse(localStorage.getItem('myFavs') || '[]');
+    
     const getData = async () => {
       const results = await Promise.all(
         favIds.map(id => axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`).then(r => r.data))
@@ -122,13 +125,13 @@ const Favorites = () => {
       setList(results);
     };
     if(favIds.length > 0) getData();
-  }, []);
+  }, []); 
 
   return (
     <div className="container">
       <h2>My Saved Books</h2>
       <div className="book-grid">
-        {list.length > 0 ? list.map(b => <BookCard key={b.id} book={b} />) : <p>No favorites yet!</p>}
+        {list.length > 0 ? list.map(b => <BookCard key={b.id} book={b} />) : <p>No Favorites yet!</p>}
       </div>
     </div>
   );
