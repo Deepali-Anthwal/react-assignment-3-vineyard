@@ -11,17 +11,19 @@ body {
 }
 
 .navbar {
-  background-color: azure;
+  background-color: aqua; 
+  padding: 15px 0;
   border-bottom: 2px solid #000;
-  padding: 15px;
-  margin-bottom: 20px;
+  display: flex;             
+  justify-content: center;   
+  gap: 30px;                 
 }
 
 .nav-link {
-  margin: 0 15px;
-  font-weight: bold;
   text-decoration: none;
   color: #000;
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 
 .search-section {
